@@ -13,7 +13,8 @@ import {
   Clock,
   Package,
   Edit,
-  FileText
+  FileText,
+  TrendingUp
 } from 'lucide-react';
 
 const ProjectDetail: React.FC = () => {
@@ -92,6 +93,12 @@ const ProjectDetail: React.FC = () => {
       unit_price: 45000,
       phase_name: 'Phase 3 - MEP'
     }
+  ];
+
+  const mockFiles = [
+    { filename: 'blueprint-1.pdf', originalname: 'Blueprint 1.pdf' },
+    { filename: 'contract.docx', originalname: 'Contract.docx' },
+    { filename: 'site-photo.jpg', originalname: 'Site Photo.jpg' },
   ];
 
   const tabs = [
@@ -458,6 +465,25 @@ const ProjectDetail: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Download Files Section */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Files</h3>
+        <ul className="space-y-2">
+          {mockFiles.map(file => (
+            <li key={file.filename} className="flex items-center space-x-2">
+              <FileText className="h-4 w-4 text-gray-500" />
+              <a
+                href={`/api/projects/${project.id}/download/${file.filename}`}
+                className="text-blue-600 hover:underline"
+                download
+              >
+                {file.originalname}
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
 
       {/* Tabs */}

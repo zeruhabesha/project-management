@@ -19,7 +19,7 @@ import {
   deleteProjectFailure,
 } from '../slices/projectsSlice';
 
-function* fetchProjectsSaga(action: PayloadAction<any>) {
+function* fetchProjectsSaga(action: PayloadAction<any>): Generator {
   try {
     const response = yield call(projectsApi.getProjects, action.payload);
     yield put(fetchProjectsSuccess(response.data));
@@ -28,7 +28,7 @@ function* fetchProjectsSaga(action: PayloadAction<any>) {
   }
 }
 
-function* fetchProjectSaga(action: PayloadAction<string>) {
+function* fetchProjectSaga(action: PayloadAction<string>): Generator {
   try {
     const response = yield call(projectsApi.getProject, action.payload);
     yield put(fetchProjectSuccess(response.data.data));
@@ -37,7 +37,7 @@ function* fetchProjectSaga(action: PayloadAction<string>) {
   }
 }
 
-function* createProjectSaga(action: PayloadAction<any>) {
+function* createProjectSaga(action: PayloadAction<any>): Generator {
   try {
     const response = yield call(projectsApi.createProject, action.payload);
     yield put(createProjectSuccess(response.data.data));
@@ -46,7 +46,7 @@ function* createProjectSaga(action: PayloadAction<any>) {
   }
 }
 
-function* updateProjectSaga(action: PayloadAction<{ id: string; data: any }>) {
+function* updateProjectSaga(action: PayloadAction<{ id: string; data: any }>): Generator {
   try {
     const response = yield call(projectsApi.updateProject, action.payload.id, action.payload.data);
     yield put(updateProjectSuccess(response.data.data));
@@ -55,7 +55,7 @@ function* updateProjectSaga(action: PayloadAction<{ id: string; data: any }>) {
   }
 }
 
-function* deleteProjectSaga(action: PayloadAction<string>) {
+function* deleteProjectSaga(action: PayloadAction<string>): Generator {
   try {
     yield call(projectsApi.deleteProject, action.payload);
     yield put(deleteProjectSuccess(action.payload));

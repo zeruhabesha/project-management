@@ -5,6 +5,7 @@ import { X, FolderOpen, Calendar, DollarSign, User, FileText } from 'lucide-reac
 import { useAppDispatch } from '../../hooks/redux';
 import { updateProjectStart } from '../../store/slices/projectsSlice';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 interface EditProjectModalProps {
   isOpen: boolean;
@@ -36,6 +37,7 @@ const EditProjectModal: React.FC<EditProjectModalProps> = ({ isOpen, onClose, pr
   } = useForm<ProjectFormData>();
 
   const startDate = watch('start_date');
+  const [file, setFile] = React.useState<File | null>(null);
 
   useEffect(() => {
     if (project) {
@@ -50,16 +52,30 @@ const EditProjectModal: React.FC<EditProjectModalProps> = ({ isOpen, onClose, pr
     }
   }, [project, setValue]);
 
-  const onSubmit = (data: ProjectFormData) => {
+  const onSubmit = async (data: ProjectFormData) => {
     const projectData = {
       ...data,
       tender_value: Number(data.tender_value),
     };
 
-    dispatch(updateProjectStart({ id: project.id, data: projectData }));
-    toast.success('Project updated successfully');
-    reset();
-    onClose();
+    try {
+      const result = await dispatch(updateProjectStart({ id: project.id, data: projectData }));
+      // If file is selected and project updated successfully
+      if (file && project.id) {
+        const formData = new FormData();
+        formData.append('file', file);
+        await axios.post(`/api/projects/${project.id}/upload`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        toast.success('File uploaded successfully');
+      }
+      toast.success('Project updated successfully');
+      reset();
+      setFile(null);
+      onClose();
+    } catch (err) {
+      toast.error('Failed to update project or upload file');
+    }
   };
 
   const handleClose = () => {
@@ -249,6 +265,17 @@ const EditProjectModal: React.FC<EditProjectModalProps> = ({ isOpen, onClose, pr
                     placeholder="Enter project description..."
                   />
                 </div>
+              </div>
+
+              {/* File Upload */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Attach File (Image, PDF, Word)</label>
+                <input
+                  type="file"
+                  accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  onChange={e => setFile(e.target.files?.[0] || null)}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg"
+                />
               </div>
             </div>
 

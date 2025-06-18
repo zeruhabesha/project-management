@@ -25,7 +25,7 @@ import toast from 'react-hot-toast';
 
 const Projects: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { projects, loading, error } = useAppSelector((state) => state.projects);
+  const projectsState = useAppSelector((state) => state.projects);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -263,6 +263,15 @@ const Projects: React.FC = () => {
                     title="View Details"
                   >
                     <Eye className="h-4 w-4" />
+                  </Link>
+                  <Link
+                    to={`/api/projects/${project.id}/download/sample.pdf`}
+                    target="_blank"
+                    className="p-2 text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20"
+                    title="Download File"
+                    download
+                  >
+                    <FolderOpen className="h-4 w-4" />
                   </Link>
                   <button
                     onClick={() => handleEditProject(project)}
